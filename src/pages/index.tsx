@@ -2,13 +2,13 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { FiCalendar, FiUser } from 'react-icons/fi';
+import Prismic from '@prismicio/client';
+import Link from 'next/link';
 import Header from '../components/Header';
 import { ConvertToDate } from '../helpers/Converts';
 import { getPrismicClient } from '../services/prismic';
-import Prismic from '@prismicio/client';
 
 import styles from './home.module.scss';
-import Link from 'next/link';
 
 interface Post {
   uid?: string;
@@ -29,7 +29,7 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-export default function Home({ postsPagination }: HomeProps) {
+export default function Home({ postsPagination }: HomeProps): JSX.Element {
   const [posts, setPosts] = useState<Post[]>([]);
   const [nextPage, setNextPage] = useState('');
 
@@ -88,7 +88,11 @@ export default function Home({ postsPagination }: HomeProps) {
             </Link>
           ))}
           {nextPage && (
-            <button className={styles.loadMorePostsButton} type="button" onClick={handlePagination}>
+            <button
+              className={styles.loadMorePostsButton}
+              type="button"
+              onClick={handlePagination}
+            >
               Carregar mais posts
             </button>
           )}
@@ -109,7 +113,7 @@ export const getStaticProps: GetStaticProps = async ({
     {
       fetch: ['publication.title', 'publication.content'],
       pageSize: 20,
-      ref: previewData?.ref ?? null,    
+      ref: previewData?.ref ?? null,
     },
   );
 
@@ -121,7 +125,7 @@ export const getStaticProps: GetStaticProps = async ({
         title: post.data.title,
         subtitle: post.data.subtitle,
         author: post.data.author,
-      }
+      },
     };
   });
 

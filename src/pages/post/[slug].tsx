@@ -35,7 +35,7 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post({ post }: PostProps) {
+export default function Post({ post }: PostProps): JSX.Element {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -44,31 +44,31 @@ export default function Post({ post }: PostProps) {
 
   const amountWordsOfBody = post.data.content
     ? RichText.asText(
-      post.data.content.reduce((acc, data) => [...acc, ...data.body], [])
-    ).split(' ').length 
+        post.data.content.reduce((acc, data) => [...acc, ...data.body], []),
+      ).split(' ').length
     : 0;
 
   const amountWordsOfHeading = post.data.content
     ? post.data.content.reduce((acc, data) => {
-      if (data.heading) {
-        return [...acc, ...data.heading.split(' ')];
-      }
+        if (data.heading) {
+          return [...acc, ...data.heading.split(' ')];
+        }
 
-      return [...acc];
-    }, []).length 
+        return [...acc];
+      }, []).length
     : 0;
 
   const readingTime = Math.ceil(
-    (amountWordsOfBody + amountWordsOfHeading) / 200
+    (amountWordsOfBody + amountWordsOfHeading) / 200,
   );
-  
+
   return (
     <>
       <Head>
         <title>Post | spacetraveling.</title>
       </Head>
 
-      <Header/>
+      <Header />
 
       <main>
         <img className={styles.banner} src={post.data.banner.url} alt="" />
@@ -115,7 +115,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   const posts = await prismic.query(
     [Prismic.predicates.at('document.type', 'post')],
-    { pageSize: 3 }
+    { pageSize: 3 },
   );
 
   const paths = posts.results.map(result => {
@@ -132,17 +132,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps = async ({ req, params }) => {
+export const getStaticProps = async ({ params }) => {
   const { slug } = params;
   const prismic = getPrismicClient();
 
-  const response = await prismic.getByUID('post', String(slug), 
-    {
-      pageSize: 1,
-      after: slug,
-      orderings: '[document.first_publication_date desc]',
-    }
-  );
+  const response = await prismic.getByUID('post', String(slug), {
+    pageSize: 1,
+    after: slug,
+    orderings: '[document.first_publication_date desc]',
+  });
 
   const post: Post = {
     uid: response.uid,

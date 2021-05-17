@@ -29,7 +29,7 @@ export function getPrismicClient(req?: unknown): DefaultClient {
   }
 }
 
-export async function getAllPosts(pageSize: number = 3): Promise<Post[]> {
+export async function getAllPosts(pageSize = 3): Promise<Post[]> {
   try {
     const prismic = getPrismicClient();
 
@@ -49,7 +49,7 @@ export async function getAllPosts(pageSize: number = 3): Promise<Post[]> {
           title: post.data.title,
           subtitle: post.data.subtitle,
           author: post.data.author,
-        }
+        },
       };
     });
     console.log('Aqui:', posts);
